@@ -25,7 +25,6 @@ exports.addToCart = (req, res) => {
     return res.status(400).json({ error: "Invalid product_id or quantity" });
   }
 
-  // Check if product exists in cart
   db.query(
     "SELECT id, quantity FROM cart WHERE product_id = ?",
     [product_id],
@@ -36,7 +35,6 @@ exports.addToCart = (req, res) => {
       }
 
       if (results.length > 0) {
-        // Update quantity
         const newQty = results[0].quantity + quantity;
         db.query(
           "UPDATE cart SET quantity = ? WHERE id = ?",
@@ -50,7 +48,6 @@ exports.addToCart = (req, res) => {
           }
         );
       } else {
-        // Fetch product details
         db.query(
           "SELECT name, price, image FROM products WHERE id = ?",
           [product_id],
@@ -63,7 +60,7 @@ exports.addToCart = (req, res) => {
               return res.status(404).json({ error: "Product not found" });
             }
             const product = productResults[0];
-            // Insert new
+
             db.query(
               "INSERT INTO cart (product_id, quantity, name, price, image) VALUES (?, ?, ?, ?, ?)",
               [

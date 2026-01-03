@@ -1,6 +1,5 @@
 require("dotenv").config({ path: "./.env" });
 
-// Validate required environment variables
 const requiredEnvVars = [
   "DB_HOST",
   "DB_USER",
@@ -20,36 +19,26 @@ if (missingVars.length > 0) {
 const express = require("express");
 const cors = require("cors");
 
-// Initialize DB connection
 const db = require("./models/db");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Make db accessible in routes if needed
 app.locals.db = db;
 
-/* =========================
-   ROUTES
-========================= */
 const productsRoutes = require("./routes/products");
 const cartRoutes = require("./routes/cart");
 
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartRoutes);
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-/* =========================
-   SERVER
-========================= */
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
